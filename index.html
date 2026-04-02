@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Your Happy Place 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Pacifico&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --pink:#ff6b9d;--pink2:#ff8fb0;--pink3:#ffc2d4;--pink4:#ffe8f0;
+  --peach:#ffb347;--yellow:#ffe66d;--mint:#a8e6cf;--lavender:#c8b8e8;
+  --green:#56ab2f;--green2:#a8e063;
+  --bg:#fff5f8;--card:#ffffff;--text:#5a3a4a;--text2:#8a5a6a;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text);overflow-x:hidden;min-height:100vh;}
+
+/* FLOATING BG FLOWERS */
+.bg-flowers{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bf{position:absolute;font-size:clamp(1rem,3vw,2rem);opacity:.12;animation:floatBF linear infinite;}
+@keyframes floatBF{0%{transform:translateY(110vh) rotate(0deg);}100%{transform:translateY(-10vh) rotate(360deg);}}
+
+/* HEADER */
+header{position:relative;z-index:1;text-align:center;padding:3rem 1rem 2rem;background:linear-gradient(180deg,#ffe8f0 0%,#fff5f8 100%);}
+.header-flowers{font-size:clamp(2rem,6vw,3.5rem);animation:bounce 2s ease-in-out infinite;display:block;margin-bottom:.5rem;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+header h1{font-family:'Pacifico',cursive;font-size:clamp(2rem,7vw,4rem);color:var(--pink);text-shadow:2px 3px 0 rgba(255,107,157,.2);line-height:1.2;}
+header p{font-size:clamp(.9rem,2.5vw,1.15rem);color:var(--text2);margin-top:.5rem;font-style:italic;}
+.mood-bar{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;}
+.mood-btn{background:white;border:2px solid var(--pink3);padding:.5rem 1.1rem;border-radius:30px;font-size:clamp(.8rem,2vw,.95rem);font-family:'Nunito',sans-serif;cursor:pointer;transition:all .25s;color:var(--text2);}
+.mood-btn:hover,.mood-btn.active{background:var(--pink);border-color:var(--pink);color:white;transform:scale(1.07);}
+
+/* NAV TABS */
+.tab-nav{position:sticky;top:0;z-index:100;background:rgba(255,245,248,.95);backdrop-filter:blur(10px);border-bottom:2px solid var(--pink3);display:flex;overflow-x:auto;scrollbar-width:none;padding:0 .5rem;}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-btn{flex:0 0 auto;padding:.8rem 1.2rem;font-family:'Nunito',sans-serif;font-weight:700;font-size:clamp(.72rem,2vw,.88rem);color:var(--text2);background:none;border:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab-btn.active{color:var(--pink);border-bottom-color:var(--pink);}
+
+/* SECTIONS */
+.game-section{display:none;position:relative;z-index:1;padding:1.5rem 1rem 3rem;max-width:700px;margin:0 auto;min-height:60vh;}
+.game-section.active{display:block;}
+.sec-title{font-family:'Pacifico',cursive;font-size:clamp(1.5rem,5vw,2.2rem);color:var(--pink);text-align:center;margin-bottom:.4rem;}
+.sec-sub{text-align:center;color:var(--text2);font-style:italic;font-size:clamp(.85rem,2vw,1rem);margin-bottom:2rem;}
+
+/* ===== SCRATCH CARD ===== */
+.scratch-container{position:relative;width:min(340px,90vw);height:180px;margin:0 auto 2rem;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(255,107,157,.25);}
+#scratchReveal{position:absolute;inset:0;background:linear-gradient(135deg,#ffe8f0,#ffc2d4);display:flex;align-items:center;justify-content:center;flex-direction:column;padding:1.5rem;text-align:center;border-radius:20px;}
+#scratchReveal .msg-icon{font-size:2.5rem;margin-bottom:.5rem;}
+#scratchReveal .msg-text{font-family:'Pacifico',cursive;font-size:clamp(1rem,3.5vw,1.3rem);color:var(--pink);line-height:1.4;}
+#scratchCanvas{position:absolute;inset:0;border-radius:20px;cursor:crosshair;touch-action:none;}
+.scratch-hint{text-align:center;color:var(--text2);font-size:.85rem;font-style:italic;margin-bottom:1.5rem;}
+.scratch-next{display:block;margin:0 auto;background:var(--pink);color:white;border:none;padding:.7rem 2rem;border-radius:30px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.scratch-next:hover,.scratch-next:active{transform:scale(1.05);box-shadow:0 6px 20px rgba(255,107,157,.4);}
+.scratch-progress{text-align:center;margin-top:1rem;font-size:.85rem;color:var(--text2);}
+
+/* ===== FLOWER GARDEN ===== */
+#gardenC{display:block;width:100%;max-width:600px;margin:0 auto;border-radius:20px;box-shadow:0 8px 30px rgba(100,200,100,.2);cursor:crosshair;touch-action:none;}
+.garden-controls{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1.2rem 0;}
+.flower-picker{width:42px;height:42px;border-radius:50%;border:3px solid white;font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;background:white;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+.flower-picker.selected,.flower-picker:hover{transform:scale(1.2);box-shadow:0 4px 16px rgba(255,107,157,.4);}
+.garden-btns{display:flex;gap:.8rem;justify-content:center;margin-top:.8rem;flex-wrap:wrap;}
+.g-btn{background:white;border:2px solid var(--pink3);padding:.55rem 1.3rem;border-radius:30px;font-family:'Nunito',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;color:var(--text2);transition:all .22s;}
+.g-btn:hover,.g-btn:active{background:var(--pink);border-color:var(--pink);color:white;}
+.garden-count{text-align:center;margin-top:.8rem;font-size:.9rem;color:var(--text2);}
+
+/* ===== DANCE PARTY ===== */
+#danceStage{width:100%;max-width:600px;height:300px;margin:0 auto;border-radius:20px;background:linear-gradient(135deg,#1a0a2e,#2d1b4e);position:relative;overflow:hidden;box-shadow:0 8px 30px rgba(150,100,200,.3);}
+.disco-light{position:absolute;border-radius:50%;filter:blur(40px);pointer-events:none;animation:discoMove linear infinite;}
+@keyframes discoMove{0%{transform:translate(0,0);}25%{transform:translate(80px,-40px);}50%{transform:translate(-30px,60px);}75%{transform:translate(60px,30px);}100%{transform:translate(0,0);}}
+.dance-emoji{position:absolute;font-size:clamp(2rem,5vw,3rem);cursor:pointer;transition:transform .1s;user-select:none;-webkit-user-select:none;animation:danceFloat ease-in-out infinite;}
+@keyframes danceFloat{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-15px) rotate(5deg);}}
+.dance-controls{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin:1.2rem 0;}
+.d-btn{background:linear-gradient(135deg,var(--pink),var(--lavender));color:white;border:none;padding:.65rem 1.5rem;border-radius:30px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.d-btn:hover,.d-btn:active{transform:scale(1.06);box-shadow:0 6px 20px rgba(200,100,200,.4);}
+.beat-bar{display:flex;gap:4px;justify-content:center;margin-top:.8rem;height:40px;align-items:flex-end;}
+.beat-b{width:8px;background:linear-gradient(to top,var(--pink),var(--lavender));border-radius:4px 4px 0 0;animation:beatAnim ease-in-out infinite;}
+@keyframes beatAnim{0%,100%{height:8px;}50%{height:36px;}}
+
+/* ===== FORTUNE FLOWER ===== */
+.fortune-wrap{text-align:center;}
+#fortuneC{display:block;margin:0 auto;max-width:min(300px,85vw);cursor:pointer;filter:drop-shadow(0 8px 20px rgba(255,107,157,.3));}
+.fortune-result{margin-top:1.5rem;padding:1.5rem;background:white;border-radius:20px;box-shadow:0 4px 20px rgba(255,107,157,.15);border:2px solid var(--pink3);opacity:0;transform:scale(.9);transition:all .4s;display:none;}
+.fortune-result.show{opacity:1;transform:scale(1);display:block;}
+.fortune-emoji{font-size:2.5rem;margin-bottom:.5rem;}
+.fortune-text{font-family:'Pacifico',cursive;font-size:clamp(1rem,3.5vw,1.3rem);color:var(--pink);line-height:1.5;}
+.fortune-sub{font-size:.9rem;color:var(--text2);margin-top:.5rem;font-style:italic;}
+.fortune-hint{font-size:.85rem;color:var(--text2);font-style:italic;margin-bottom:1rem;}
+
+/* ===== CATCH PETALS GAME ===== */
+#catchC{display:block;width:100%;max-width:600px;height:300px;margin:0 auto;border-radius:20px;background:linear-gradient(180deg,#e8f8ff 0%,#fce8f5 100%);box-shadow:0 8px 30px rgba(255,107,157,.2);touch-action:none;cursor:none;}
+.catch-ui{display:flex;justify-content:space-between;align-items:center;max-width:600px;margin:.8rem auto;padding:0 .5rem;}
+.catch-score{font-family:'Pacifico',cursive;font-size:1.2rem;color:var(--pink);}
+.catch-lives{font-size:1.2rem;letter-spacing:.2rem;}
+.catch-btn{background:var(--pink);color:white;border:none;padding:.6rem 1.5rem;border-radius:30px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;}
+
+/* ===== MEMORY MATCH ===== */
+.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;max-width:400px;margin:0 auto;}
+@media(max-width:400px){.memory-grid{grid-template-columns:repeat(4,1fr);gap:.4rem;}}
+.mem-card{aspect-ratio:1;background:linear-gradient(135deg,var(--pink),var(--pink2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:clamp(1.4rem,5vw,2rem);cursor:pointer;transition:transform .3s;transform-style:preserve-3d;position:relative;box-shadow:0 4px 12px rgba(255,107,157,.2);-webkit-tap-highlight-color:transparent;}
+.mem-card.flipped,.mem-card.matched{transform:rotateY(180deg);}
+.mem-front,.mem-back{position:absolute;width:100%;height:100%;border-radius:12px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;font-size:clamp(1.4rem,5vw,2rem);}
+.mem-front{background:linear-gradient(135deg,var(--pink),#ff8fb0);color:white;}
+.mem-back{background:white;transform:rotateY(180deg);border:2px solid var(--pink3);}
+.mem-card.matched .mem-back{background:linear-gradient(135deg,#a8e6cf,#56ab2f22);border-color:var(--mint);}
+.memory-stats{display:flex;justify-content:space-around;max-width:400px;margin:.8rem auto;background:white;border-radius:16px;padding:.8rem;box-shadow:0 2px 12px rgba(255,107,157,.1);}
+.m-stat{text-align:center;}
+.m-stat-val{font-family:'Pacifico',cursive;font-size:1.4rem;color:var(--pink);}
+.m-stat-lbl{font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;}
+.mem-btn{display:block;margin:1rem auto 0;background:var(--pink);color:white;border:none;padding:.65rem 2rem;border-radius:30px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;}
+
+/* ===== MOOD MANTRA ===== */
+.mantra-wrap{text-align:center;}
+.mantra-wheel{display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center;margin-bottom:2rem;}
+.m-mood{padding:.6rem 1.2rem;background:white;border:2px solid var(--pink3);border-radius:30px;font-size:.9rem;cursor:pointer;transition:all .22s;-webkit-tap-highlight-color:transparent;}
+.m-mood:hover,.m-mood.active{transform:scale(1.08);}
+.mantra-card{background:white;border-radius:20px;padding:2rem 1.5rem;box-shadow:0 8px 30px rgba(255,107,157,.12);border:2px solid var(--pink3);max-width:500px;margin:0 auto;display:none;}
+.mantra-card.show{display:block;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{opacity:0;transform:scale(.85);}to{opacity:1;transform:scale(1);}}
+.mantra-icon{font-size:3rem;margin-bottom:.8rem;}
+.mantra-title{font-family:'Pacifico',cursive;font-size:1.4rem;color:var(--pink);margin-bottom:.5rem;}
+.mantra-text{font-size:1rem;color:var(--text2);line-height:1.8;font-style:italic;}
+.mantra-affirmations{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:1rem;}
+.affirmation{background:var(--pink4);color:var(--pink);padding:.35rem .9rem;border-radius:20px;font-size:.82rem;font-weight:600;}
+
+/* ===== COMPLIMENT MACHINE ===== */
+.comp-wrap{text-align:center;}
+.comp-machine{background:white;border-radius:24px;padding:2rem 1.5rem;max-width:420px;margin:0 auto;box-shadow:0 8px 30px rgba(255,107,157,.15);border:2px solid var(--pink3);position:relative;overflow:hidden;}
+.comp-machine::before{content:'✨';position:absolute;top:1rem;right:1rem;font-size:1.5rem;animation:spin 4s linear infinite;}
+@keyframes spin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+.comp-display{min-height:100px;display:flex;align-items:center;justify-content:center;flex-direction:column;margin:1rem 0;}
+.comp-emoji{font-size:3rem;animation:heartbeat 1.5s ease-in-out infinite;display:block;margin-bottom:.5rem;}
+.comp-text{font-family:'Pacifico',cursive;font-size:clamp(1rem,3.5vw,1.3rem);color:var(--pink);line-height:1.5;}
+.comp-btn{background:linear-gradient(135deg,var(--pink),var(--peach));color:white;border:none;padding:.85rem 2.5rem;border-radius:30px;font-family:'Nunito',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:transform .2s,box-shadow .2s;margin-top:.5rem;-webkit-tap-highlight-color:transparent;}
+.comp-btn:hover,.comp-btn:active{transform:scale(1.06);box-shadow:0 8px 25px rgba(255,107,157,.4);}
+@keyframes heartbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--pink);color:white;padding:.8rem 1.8rem;border-radius:30px;font-weight:700;font-size:.92rem;z-index:9999;transition:transform .4s;box-shadow:0 8px 25px rgba(255,107,157,.4);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* CONFETTI */
+.confetti-piece{position:fixed;top:-20px;width:10px;height:10px;pointer-events:none;z-index:9998;animation:confettiFall linear forwards;}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0) translateX(0);opacity:1;}100%{transform:translateY(110vh) rotate(720deg) translateX(var(--cx));opacity:0;}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--pink4);}
+::-webkit-scrollbar-thumb{background:var(--pink3);border-radius:3px;}
+
+@media(max-width:480px){
+  .memory-grid{gap:.35rem;}
+  #danceStage{height:240px;}
+  #catchC{height:250px;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-flowers" id="bgFlowers"></div>
+
+<header>
+  <span class="header-flowers">🌸🌺🌷</span>
+  <h1>Your Happy Place Thangoo</h1>
+  <p>A little garden of joy, made just for you 💛</p>
+  <div class="mood-bar">
+    <button class="mood-btn" onclick="setMood('😊','Happy')">😊 Happy</button>
+    <button class="mood-btn" onclick="setMood('🌸','Chill')">🌸 Chill</button>
+    <button class="mood-btn" onclick="setMood('🎉','Excited')">🎉 Excited</button>
+    <button class="mood-btn" onclick="setMood('💛','Grateful')">💛 Grateful</button>
+    <button class="mood-btn" onclick="setMood('🌙','Tired')">🌙 Tired</button>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('scratch')">🎴 Scratch Card</button>
+  <button class="tab-btn" onclick="showTab('garden')">🌱 My Garden</button>
+  <button class="tab-btn" onclick="showTab('dance')">🕺 Dance Party</button>
+  <button class="tab-btn" onclick="showTab('fortune')">🌸 Fortune Flower</button>
+  <button class="tab-btn" onclick="showTab('catch')">🌺 Petal Catch</button>
+  <button class="tab-btn" onclick="showTab('memory')">🧠 Flower Match</button>
+  <button class="tab-btn" onclick="showTab('mantra')">✨ Mood Mantra</button>
+  <button class="tab-btn" onclick="showTab('compliment')">💌 Compliment Me</button>
+</nav>
+
+<!-- ====== SCRATCH CARD ====== -->
+<div class="game-section active" id="tab-scratch">
+  <h2 class="sec-title">✨ Scratch & Smile</h2>
+  <p class="sec-sub">Scratch the card to reveal your message!</p>
+  <div class="scratch-container">
+    <div id="scratchReveal">
+      <div class="msg-icon" id="scratchIcon">🌸</div>
+      <div class="msg-text" id="scratchMsg">You are absolutely wonderful!</div>
+    </div>
+    <canvas id="scratchCanvas"></canvas>
+  </div>
+  <p class="scratch-hint">🖐 Scratch with your finger or mouse</p>
+  <button class="scratch-next" onclick="newScratchCard()">New Card 🎴</button>
+  <p class="scratch-progress" id="scratchCount">Card 1 of 10</p>
+</div>
+
+<!-- ====== GARDEN ====== -->
+<div class="game-section" id="tab-garden">
+  <h2 class="sec-title">🌱 My Flower Garden</h2>
+  <p class="sec-sub">Tap or click anywhere to plant flowers!</p>
+  <canvas id="gardenC" width="600" height="350"></canvas>
+  <div class="garden-controls">
+    <button class="flower-picker selected" id="fp0" onclick="selectFlower(0)" title="Rose">🌹</button>
+    <button class="flower-picker" id="fp1" onclick="selectFlower(1)" title="Sunflower">🌻</button>
+    <button class="flower-picker" id="fp2" onclick="selectFlower(2)" title="Cherry Blossom">🌸</button>
+    <button class="flower-picker" id="fp3" onclick="selectFlower(3)" title="Tulip">🌷</button>
+    <button class="flower-picker" id="fp4" onclick="selectFlower(4)" title="Hibiscus">🌺</button>
+    <button class="flower-picker" id="fp5" onclick="selectFlower(5)" title="Lavender">💜</button>
+  </div>
+  <div class="garden-btns">
+    <button class="g-btn" onclick="addRain()">🌧️ Rain</button>
+    <button class="g-btn" onclick="addSunshine()">☀️ Sunshine</button>
+    <button class="g-btn" onclick="clearGarden()">🗑️ Clear</button>
+  </div>
+  <p class="garden-count" id="gardenCount">🌸 0 flowers planted</p>
+</div>
+
+<!-- ====== DANCE ====== -->
+<div class="game-section" id="tab-dance">
+  <h2 class="sec-title">🕺 Dance Party!</h2>
+  <p class="sec-sub">Tap the emojis to make them dance 💃</p>
+  <div id="danceStage"></div>
+  <div class="dance-controls">
+    <button class="d-btn" onclick="addDancer()">➕ Add Dancer</button>
+    <button class="d-btn" onclick="toggleBeat()">🎵 Beat</button>
+    <button class="d-btn" onclick="partyMode()">🎉 Party Mode!</button>
+  </div>
+  <div class="beat-bar" id="beatBar"></div>
+</div>
+
+<!-- ====== FORTUNE FLOWER ====== -->
+<div class="game-section" id="tab-fortune">
+  <h2 class="sec-title">🌸 Fortune Flower</h2>
+  <p class="sec-sub">Tap the flower to discover your fortune!</p>
+  <div class="fortune-wrap">
+    <p class="fortune-hint">✨ Each petal holds a secret ✨</p>
+    <canvas id="fortuneC" width="300" height="300"></canvas>
+    <div class="fortune-result" id="fortuneResult">
+      <div class="fortune-emoji" id="fortuneEmoji">🌸</div>
+      <div class="fortune-text" id="fortuneText">Something wonderful!</div>
+      <div class="fortune-sub" id="fortuneSub">Your fortune for today</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PETAL CATCH ====== -->
+<div class="game-section" id="tab-catch">
+  <h2 class="sec-title">🌺 Petal Catch</h2>
+  <p class="sec-sub">Move your basket and catch the falling petals!</p>
+  <div class="catch-ui">
+    <div class="catch-score">🌸 <span id="catchScore">0</span></div>
+    <div class="catch-lives" id="catchLives">💛💛💛</div>
+    <button class="catch-btn" onclick="startCatch()">Play ▶</button>
+  </div>
+  <canvas id="catchC" width="600" height="300"></canvas>
+</div>
+
+<!-- ====== MEMORY MATCH ====== -->
+<div class="game-section" id="tab-memory">
+  <h2 class="sec-title">🧠 Flower Match</h2>
+  <p class="sec-sub">Find all matching flower pairs!</p>
+  <div class="memory-stats">
+    <div class="m-stat"><div class="m-stat-val" id="memMoves">0</div><div class="m-stat-lbl">Moves</div></div>
+    <div class="m-stat"><div class="m-stat-val" id="memMatched">0</div><div class="m-stat-lbl">Matched</div></div>
+    <div class="m-stat"><div class="m-stat-val" id="memTime">0s</div><div class="m-stat-lbl">Time</div></div>
+  </div>
+  <div class="memory-grid" id="memoryGrid"></div>
+  <button class="mem-btn" onclick="initMemory()">🔄 New Game</button>
+</div>
+
+<!-- ====== MOOD MANTRA ====== -->
+<div class="game-section" id="tab-mantra">
+  <h2 class="sec-title">✨ Mood Mantra</h2>
+  <p class="sec-sub">How are you feeling right now?</p>
+  <div class="mantra-wrap">
+    <div class="mantra-wheel">
+      <div class="m-mood" onclick="showMantra('happy')" style="border-color:#ffe66d;background:#fffde0;">😄 Happy</div>
+      <div class="m-mood" onclick="showMantra('sad')" style="border-color:#a8d8ea;background:#e8f6fb;">😢 Sad</div>
+      <div class="m-mood" onclick="showMantra('tired')" style="border-color:#c8b8e8;background:#f0ebfa;">😴 Tired</div>
+      <div class="m-mood" onclick="showMantra('anxious')" style="border-color:#ffb347;background:#fff4e0;">😰 Anxious</div>
+      <div class="m-mood" onclick="showMantra('lonely')" style="border-color:#ffb3c6;background:#ffe8f0;">🥺 Lonely</div>
+      <div class="m-mood" onclick="showMantra('grateful')" style="border-color:#a8e6cf;background:#e8faf4;">🙏 Grateful</div>
+      <div class="m-mood" onclick="showMantra('strong')" style="border-color:#ff6b9d;background:#ffe8f0;">💪 Strong</div>
+      <div class="m-mood" onclick="showMantra('excited')" style="border-color:#ff8fb0;background:#ffe8f0;">🎉 Excited</div>
+    </div>
+    <div class="mantra-card" id="mantraCard"></div>
+  </div>
+</div>
+
+<!-- ====== COMPLIMENT MACHINE ====== -->
+<div class="game-section" id="tab-compliment">
+  <h2 class="sec-title">💌 Compliment Me!</h2>
+  <p class="sec-sub">You deserve to hear something beautiful 🌸</p>
+  <div class="comp-wrap">
+    <div class="comp-machine">
+      <div class="comp-display">
+        <span class="comp-emoji" id="compEmoji">🌸</span>
+        <div class="comp-text" id="compText">Press the button to receive your compliment!</div>
+      </div>
+      <button class="comp-btn" onclick="giveCompliment()">✨ Give me a compliment!</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ====== BACKGROUND FLOATING FLOWERS ======
+const bgEl=document.getElementById('bgFlowers');
+const bfEmojis=['🌸','🌺','🌷','🌻','🌹','💮','🌼','🍀'];
+for(let i=0;i<18;i++){
+  const s=document.createElement('div');
+  s.className='bf';
+  s.textContent=bfEmojis[~~(Math.random()*bfEmojis.length)];
+  s.style.left=Math.random()*100+'vw';
+  s.style.fontSize=(Math.random()*1.5+0.8)+'rem';
+  s.style.opacity=Math.random()*.12+.05;
+  const d=Math.random()*15+10;
+  s.style.animationDuration=d+'s';
+  s.style.animationDelay=-(Math.random()*d)+'s';
+  bgEl.appendChild(s);
+}
+
+// ====== TABS ======
+function showTab(id){
+  document.querySelectorAll('.game-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if(id==='garden')initGarden();
+  if(id==='dance')initDance();
+  if(id==='fortune')initFortune();
+  if(id==='catch')initCatch();
+  if(id==='memory')initMemory();
+}
+
+// ====== TOAST ======
+function showToast(msg,dur=2500){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+// ====== CONFETTI ======
+function fireConfetti(){
+  const colors=['#ff6b9d','#ffc2d4','#ffe66d','#a8e6cf','#c8b8e8','#ffb347'];
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div');
+    c.className='confetti-piece';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[~~(Math.random()*colors.length)];
+    c.style.borderRadius=Math.random()>.5?'50%':'2px';
+    c.style.width=(Math.random()*8+5)+'px';
+    c.style.height=(Math.random()*8+5)+'px';
+    c.style.setProperty('--cx',(Math.random()*200-100)+'px');
+    const d=Math.random()*2+1;
+    c.style.animationDuration=d+'s';
+    c.style.animationDelay=Math.random()*.5+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),(d+.5)*1000);
+  }
+}
+
+// ====== MOOD ======
+function setMood(emoji,name){
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  showToast(`${emoji} Feeling ${name}? This place is for you! 💛`);
+  if(name==='Excited'||name==='Happy')fireConfetti();
+}
+
+// ============ SCRATCH CARD ============
+const scratchMessages=[
+  {icon:'🌸',msg:'You are the kind of person who makes the world more beautiful just by your presence.'},
+  {icon:'💛',msg:'Today is going to be amazing — because YOU are in it!'},
+  {icon:'✨',msg:'You are stronger than you think, braver than you believe, and more loved than you know.'},
+  {icon:'🌺',msg:'Your smile can light up the entire universe. Never stop smiling.'},
+  {icon:'🦋',msg:'Like a butterfly, you are going through a beautiful transformation.'},
+  {icon:'🌈',msg:'After every storm comes a rainbow — and you are the rainbow.'},
+  {icon:'💐',msg:'You deserve all the flowers in the world, and the glowing stars, just like you.'},
+  {icon:'🌟',msg:'You are not just a star — you are the whole galaxy.'},
+  {icon:'🍀',msg:'Lucky, lucky world — to have someone as wonderful as you in it.'},
+  {icon:'💖',msg:'Your kindness and warmth make everything around you bloom like a Flower.'},
+];
+let scratchIdx=0,scratchDrawing=false;
+
+function initScratch(){
+  const canvas=document.getElementById('scratchCanvas');
+  const ctx=canvas.getContext('2d');
+  const cont=document.querySelector('.scratch-container');
+  canvas.width=cont.offsetWidth;
+  canvas.height=cont.offsetHeight;
+
+  // Draw scratch layer
+  const grad=ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+  grad.addColorStop(0,'#ff8fb0');grad.addColorStop(.5,'#ffb347');grad.addColorStop(1,'#c8b8e8');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // Text on scratch layer
+  ctx.fillStyle='rgba(255,255,255,.5)';
+  ctx.font=`bold ${Math.min(canvas.width*.07,22)}px Nunito`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('✨ Scratch Me! ✨',canvas.width/2,canvas.height/2-15);
+  ctx.fillText('🖐 Use your finger',canvas.width/2,canvas.height/2+20);
+
+  ctx.globalCompositeOperation='destination-out';
+
+  function getPos(e){
+    const r=canvas.getBoundingClientRect();
+    if(e.touches)return{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top};
+    return{x:e.clientX-r.left,y:e.clientY-r.top};
+  }
+  function scratch(e){
+    if(!scratchDrawing)return;
+    e.preventDefault();
+    const p=getPos(e);
+    ctx.beginPath();ctx.arc(p.x,p.y,28,0,Math.PI*2);ctx.fill();
+    checkScratch(ctx,canvas);
+  }
+  canvas.onmousedown=e=>{scratchDrawing=true;scratch(e);};
+  canvas.onmousemove=scratch;
+  canvas.onmouseup=canvas.onmouseleave=()=>scratchDrawing=false;
+  canvas.addEventListener('touchstart',e=>{scratchDrawing=true;scratch(e);},{passive:false});
+  canvas.addEventListener('touchmove',scratch,{passive:false});
+  canvas.addEventListener('touchend',()=>scratchDrawing=false);
+}
+
+function checkScratch(ctx,canvas){
+  const data=ctx.getImageData(0,0,canvas.width,canvas.height);
+  let clear=0;
+  for(let i=3;i<data.data.length;i+=4)if(data.data[i]<128)clear++;
+  const pct=clear/(data.data.length/4);
+  if(pct>.55){ctx.clearRect(0,0,canvas.width,canvas.height);showToast('🎉 You found your message!');}
+}
+
+function newScratchCard(){
+  scratchIdx=(scratchIdx+1)%scratchMessages.length;
+  const m=scratchMessages[scratchIdx];
+  document.getElementById('scratchIcon').textContent=m.icon;
+  document.getElementById('scratchMsg').textContent=m.msg;
+  document.getElementById('scratchCount').textContent=`Card ${scratchIdx+1} of ${scratchMessages.length}`;
+  initScratch();
+  fireConfetti();
+}
+
+setTimeout(initScratch,200);
+window.addEventListener('resize',()=>{if(document.getElementById('tab-scratch').classList.contains('active'))initScratch();});
+
+// ============ FLOWER GARDEN ============
+let gardenFlowers=[],selectedFlower=0,gardenAnimId,gardenRaining=false,gardenSun=false;
+const flowerEmojis=['🌹','🌻','🌸','🌷','🌺','💜'];
+const flowerColors=['#ff6b9d','#ffb347','#ff8fb0','#ff6b9d','#e8195a','#9b59b6'];
+
+function selectFlower(i){
+  selectedFlower=i;
+  document.querySelectorAll('.flower-picker').forEach((f,idx)=>f.classList.toggle('selected',idx===i));
+}
+
+function initGarden(){
+  const canvas=document.getElementById('gardenC');
+  if(canvas._gardenInit)return;
+  canvas._gardenInit=true;
+
+  function resize(){canvas.width=canvas.offsetWidth;canvas.height=350;}
+  resize();window.addEventListener('resize',resize);
+
+  function plantAt(cx,cy){
+    if(gardenFlowers.length>=80)return;
+    gardenFlowers.push({x:cx,y:cy,type:selectedFlower,scale:0,targetScale:1,sway:Math.random()*Math.PI*2,speed:Math.random()*.02+.01,born:Date.now()});
+    document.getElementById('gardenCount').textContent=`🌸 ${gardenFlowers.length} flower${gardenFlowers.length!==1?'s':''} planted`;
+    showToast(flowerEmojis[selectedFlower]+' Planted!');
+  }
+
+  function getPos(e){const r=canvas.getBoundingClientRect();if(e.touches)return{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top};return{x:e.clientX-r.left,y:e.clientY-r.top};}
+  canvas.onclick=e=>{const p=getPos(e);plantAt(p.x,p.y);};
+  canvas.addEventListener('touchstart',e=>{e.preventDefault();const p=getPos(e);plantAt(p.x,p.y);},{passive:false});
+
+  const raindrops=[];
+  let sunAngle=0;
+
+  function drawGarden(){
+    const ctx=canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Sky gradient
+    const sky=ctx.createLinearGradient(0,0,0,canvas.height);
+    if(gardenSun){sky.addColorStop(0,'#87CEEB');sky.addColorStop(.6,'#E8F4FD');sky.addColorStop(1,'#E8F8E8');}
+    else{sky.addColorStop(0,'#E8F4FD');sky.addColorStop(.6,'#F0FAF0');sky.addColorStop(1,'#E8F8E8');}
+    ctx.fillStyle=sky;ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // Sun
+    if(gardenSun){
+      sunAngle+=.01;ctx.save();ctx.translate(canvas.width-50,50);
+      for(let i=0;i<12;i++){ctx.save();ctx.rotate((i/12)*Math.PI*2+sunAngle);ctx.fillStyle='rgba(255,220,50,.4)';ctx.fillRect(18,0,14,4);ctx.restore();}
+      ctx.beginPath();ctx.arc(0,0,18,0,Math.PI*2);ctx.fillStyle='#FFD700';ctx.fill();ctx.restore();
+    }
+
+    // Ground
+    const ground=ctx.createLinearGradient(0,canvas.height*.7,0,canvas.height);
+    ground.addColorStop(0,'#90EE90');ground.addColorStop(1,'#228B22');
+    ctx.fillStyle=ground;ctx.fillRect(0,canvas.height*.7,canvas.width,canvas.height*.3);
+
+    // Grass blades
+    ctx.strokeStyle='#32CD32';ctx.lineWidth=2;
+    for(let i=0;i<canvas.width;i+=8){
+      const h=Math.sin(i*.1+Date.now()*.001)*5+15;
+      ctx.beginPath();ctx.moveTo(i,canvas.height*.7);ctx.quadraticCurveTo(i+4,canvas.height*.7-h,i,canvas.height*.7-h*1.5);ctx.stroke();
+    }
+
+    // Rain
+    if(gardenRaining){
+      ctx.strokeStyle='rgba(100,150,255,.6)';ctx.lineWidth=1.5;
+      for(let i=0;i<8;i++){raindrops.push({x:Math.random()*canvas.width,y:-10,vy:6+Math.random()*4});}
+      for(let i=raindrops.length-1;i>=0;i--){
+        const r=raindrops[i];r.y+=r.vy;
+        ctx.beginPath();ctx.moveTo(r.x,r.y);ctx.lineTo(r.x-1,r.y+8);ctx.stroke();
+        if(r.y>canvas.height)raindrops.splice(i,1);
+      }
+    }
+
+    // Flowers
+    const t=Date.now()*.001;
+    gardenFlowers.forEach(f=>{
+      if(f.scale<f.targetScale)f.scale=Math.min(f.scale+.04,f.targetScale);
+      const sway=Math.sin(t*f.speed*10+f.sway)*3;
+      ctx.save();ctx.translate(f.x+sway,f.y);ctx.scale(f.scale,f.scale);
+      // Stem
+      ctx.strokeStyle='#228B22';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(sway*.5,-20,0,-35);ctx.stroke();
+      // Emoji flower
+      ctx.font='28px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(flowerEmojis[f.type],0,-42);
+      ctx.restore();
+    });
+
+    // Butterflies
+    if(gardenFlowers.length>5){
+      const bx=Math.sin(t*.7)*canvas.width*.3+canvas.width*.5;
+      const by=Math.cos(t*.5)*40+canvas.height*.3;
+      ctx.font='20px serif';ctx.textAlign='center';ctx.fillText('🦋',bx,by);
+    }
+
+    gardenAnimId=requestAnimationFrame(drawGarden);
+  }
+  cancelAnimationFrame(gardenAnimId);drawGarden();
+}
+
+function addRain(){gardenRaining=!gardenRaining;showToast(gardenRaining?'🌧️ It\'s raining! Your flowers love it!':'☀️ Rain stopped!');}
+function addSunshine(){gardenSun=!gardenSun;showToast(gardenSun?'☀️ Sunshine! Everything glows!':'🌥️ Clouds came back!');}
+function clearGarden(){gardenFlowers=[];document.getElementById('gardenCount').textContent='🌸 0 flowers planted';showToast('🗑️ Garden cleared! Start fresh!');}
+
+// ============ DANCE PARTY ============
+const danceEmojis=['💃','🕺','🦄','🐱','🐶','🦊','🌸','🎵','⭐','🎀'];
+let beatInterval,beatOn=false,danceStageInit=false;
+
+function initDance(){
+  if(danceStageInit)return;danceStageInit=true;
+  const stage=document.getElementById('danceStage');
+
+  // Disco lights
+  const dlColors=['rgba(255,100,150,.4)','rgba(100,200,255,.4)','rgba(200,100,255,.4)','rgba(255,220,50,.3)'];
+  dlColors.forEach((c,i)=>{
+    const dl=document.createElement('div');dl.className='disco-light';
+    dl.style.cssText=`width:150px;height:150px;background:${c};top:${Math.random()*60}%;left:${Math.random()*60}%;animation-duration:${4+i*1.5}s;animation-delay:${-i*1.2}s;`;
+    stage.appendChild(dl);
+  });
+
+  // Beat bars
+  const bar=document.getElementById('beatBar');
+  for(let i=0;i<12;i++){
+    const b=document.createElement('div');b.className='beat-b';
+    b.style.animationDelay=`${i*0.08}s`;b.style.animationDuration=`${0.5+Math.random()*.3}s`;
+    bar.appendChild(b);
+  }
+
+  addDancer();addDancer();addDancer();
+}
+
+function addDancer(){
+  const stage=document.getElementById('danceStage');
+  const e=document.createElement('div');e.className='dance-emoji';
+  e.textContent=danceEmojis[~~(Math.random()*danceEmojis.length)];
+  const x=10+Math.random()*75,y=10+Math.random()*50;
+  e.style.left=x+'%';e.style.top=y+'%';
+  e.style.animationDuration=(1+Math.random())+'s';
+  e.style.animationDelay=-(Math.random()*2)+'s';
+  e.onclick=()=>{
+    e.style.transform='scale(1.8)';
+    e.style.filter='brightness(1.5)';
+    setTimeout(()=>{e.style.transform='';e.style.filter='';},300);
+    fireConfetti();
+  };
+  stage.appendChild(e);
+  if(stage.querySelectorAll('.dance-emoji').length>15){stage.querySelectorAll('.dance-emoji')[0].remove();}
+}
+
+function toggleBeat(){
+  beatOn=!beatOn;
+  if(beatOn){
+    showToast('🎵 The beat drops!');
+    beatInterval=setInterval(()=>{
+      document.querySelectorAll('.dance-emoji').forEach(e=>{
+        e.style.animationDuration=(0.3+Math.random()*.4)+'s';
+      });
+    },500);
+  }else{
+    clearInterval(beatInterval);
+    document.querySelectorAll('.dance-emoji').forEach(e=>{e.style.animationDuration=(1+Math.random())+'s';});
+    showToast('🎵 Beat paused!');
+  }
+}
+
+function partyMode(){
+  fireConfetti();showToast('🎉 PARTY MODE! 🎉',3000);
+  for(let i=0;i<6;i++)setTimeout(addDancer,i*200);
+  for(let i=0;i<5;i++)setTimeout(fireConfetti,i*400);
+}
+
+// ============ FORTUNE FLOWER ============
+const fortunes=[
+  {emoji:'🌸',text:'Today, something unexpectedly beautiful will happen to you.',sub:'The universe has a lovely surprise ready 🌟'},
+  {emoji:'🌈',text:'A new beginning is blooming for you right now.',sub:'Trust the process — it leads somewhere magical ✨'},
+  {emoji:'💛',text:'Someone is thinking of you right now with warm, happy thoughts.',sub:'You are more loved than you know 💕'},
+  {emoji:'🦋',text:'You are about to step into the best version of yourself.',sub:'Your transformation is already underway 🌱'},
+  {emoji:'🌙',text:'Rest now. Big energy is coming your way very soon.',sub:'Good things come to those who recharge 😴'},
+  {emoji:'⭐',text:'Your future is absolutely glowing with possibility.',sub:'The stars have already written your success story 🌟'},
+  {emoji:'🌺',text:'A moment of pure joy is coming today — be ready to receive it.',sub:'Open your heart and let happiness in 💖'},
+  {emoji:'🍀',text:'Incredible luck is headed your way this week.',sub:'You were born for wonderful things 🌟'},
+  {emoji:'🎵',text:'Music, laughter, and good vibes are your fortune today.',sub:'Let yourself feel light and free 🕊️'},
+  {emoji:'💐',text:'You are about to be surprised by how strong you truly are.',sub:'You have survived 100% of your hard days so far 💪'},
+];
+let fortuneAngle=0,fortuneAnimId,fortuneSpinning=false;
+
+function initFortune(){
+  const canvas=document.getElementById('fortuneC');
+  canvas.width=canvas.height=Math.min(300,window.innerWidth*.8);
+  drawFortuneFlower(fortuneAngle);
+
+  canvas.onclick=canvas.addEventListener?canvas.onclick:null;
+  canvas.onclick=()=>spinFortune();
+  canvas.addEventListener('touchstart',e=>{e.preventDefault();spinFortune();},{passive:false});
+}
+
+function drawFortuneFlower(angle){
+  const canvas=document.getElementById('fortuneC');
+  const ctx=canvas.getContext('2d');
+  const cx=canvas.width/2,cy=canvas.height/2,r=canvas.width*.38;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const petalColors=['#ff6b9d','#ffb347','#ffe66d','#a8e6cf','#c8b8e8','#ff8fb0','#56ab2f','#ffc2d4'];
+  const petals=8;
+  for(let i=0;i<petals;i++){
+    const a=(i/petals)*Math.PI*2+angle;
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(a);
+    ctx.beginPath();ctx.ellipse(0,-r*.6,r*.32,r*.55,0,0,Math.PI*2);
+    const pg=ctx.createRadialGradient(0,-r*.4,0,0,-r*.4,r*.5);
+    pg.addColorStop(0,petalColors[i%petalColors.length]+'dd');
+    pg.addColorStop(1,petalColors[(i+1)%petalColors.length]+'88');
+    ctx.fillStyle=pg;ctx.fill();
+    ctx.restore();
+  }
+
+  // Centre
+  ctx.beginPath();ctx.arc(cx,cy,r*.22,0,Math.PI*2);
+  const cg=ctx.createRadialGradient(cx-r*.05,cy-r*.05,0,cx,cy,r*.22);
+  cg.addColorStop(0,'#fff9c4');cg.addColorStop(1,'#ffb347');
+  ctx.fillStyle=cg;ctx.shadowBlur=20;ctx.shadowColor='rgba(255,180,50,.5)';ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.font=`bold ${r*.18}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('✨',cx,cy);
+}
+
+function spinFortune(){
+  if(fortuneSpinning)return;fortuneSpinning=true;
+  cancelAnimationFrame(fortuneAnimId);
+  const speed={v:.18};
+  const f=fortunes[~~(Math.random()*fortunes.length)];
+  let elapsed=0;
+  function spin(){
+    elapsed++;fortuneAngle+=speed.v;speed.v*=.985;
+    drawFortuneFlower(fortuneAngle);
+    if(speed.v>.005&&elapsed<120){fortuneAnimId=requestAnimationFrame(spin);}
+    else{
+      fortuneSpinning=false;
+      document.getElementById('fortuneEmoji').textContent=f.emoji;
+      document.getElementById('fortuneText').textContent=f.text;
+      document.getElementById('fortuneSub').textContent=f.sub;
+      const res=document.getElementById('fortuneResult');
+      res.classList.add('show');res.style.display='block';
+      fireConfetti();showToast('🌸 Your fortune revealed!');
+    }
+  }
+  document.getElementById('fortuneResult').classList.remove('show');
+  document.getElementById('fortuneResult').style.display='none';
+  requestAnimationFrame(spin);
+}
+
+// ============ PETAL CATCH ============
+let catchGame={running:false,score:0,lives:3,basket:{x:.5},petals:[],animId:null,interval:null};
+
+function initCatch(){
+  const canvas=document.getElementById('catchC');
+  canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight||300;
+
+  canvas.onmousemove=e=>{const r=canvas.getBoundingClientRect();catchGame.basket.x=(e.clientX-r.left)/canvas.width;};
+  canvas.addEventListener('touchmove',e=>{e.preventDefault();const r=canvas.getBoundingClientRect();catchGame.basket.x=(e.touches[0].clientX-r.left)/canvas.width;},{passive:false});
+}
+
+function startCatch(){
+  const canvas=document.getElementById('catchC');
+  canvas.width=canvas.offsetWidth;
+  catchGame={running:true,score:0,lives:3,basket:{x:.5},petals:[],animId:null,interval:null};
+  document.getElementById('catchScore').textContent='0';
+  document.getElementById('catchLives').textContent='💛💛💛';
+  clearInterval(catchGame.interval);
+  catchGame.interval=setInterval(()=>{
+    if(!catchGame.running)return;
+    const types=['🌸','🌺','🌷','🌻','🌹','💮'];
+    catchGame.petals.push({x:Math.random(),y:0,vy:.004+Math.random()*.004,type:types[~~(Math.random()*types.length)]});
+  },800);
+  drawCatch();
+}
+
+function drawCatch(){
+  if(!catchGame.running)return;
+  const canvas=document.getElementById('catchC');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  // BG
+  const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#e8f8ff');bg.addColorStop(1,'#fce8f5');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  // Basket
+  const bx=catchGame.basket.x*W,by=H-40,bw=70,bh=30;
+  ctx.beginPath();ctx.moveTo(bx-bw/2,by);ctx.lineTo(bx+bw/2,by);ctx.lineTo(bx+bw/2-8,by+bh);ctx.lineTo(bx-bw/2+8,by+bh);ctx.closePath();
+  const bg2=ctx.createLinearGradient(0,by,0,by+bh);bg2.addColorStop(0,'#ff8fb0');bg2.addColorStop(1,'#ff3a6e');
+  ctx.fillStyle=bg2;ctx.fill();ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;ctx.stroke();
+  ctx.font='20px serif';ctx.textAlign='center';ctx.fillText('🧺',bx,by+bh*.7);
+
+  // Petals
+  ctx.font='22px serif';
+  for(let i=catchGame.petals.length-1;i>=0;i--){
+    const p=catchGame.petals[i];
+    p.y+=p.vy;
+    ctx.fillText(p.type,p.x*W,p.y*H);
+
+    // Check catch
+    if(p.y*H>by-10&&p.y*H<by+bh&&Math.abs(p.x*W-bx)<bw/2){
+      catchGame.petals.splice(i,1);catchGame.score++;
+      document.getElementById('catchScore').textContent=catchGame.score;
+      if(catchGame.score%10===0){showToast(`🎉 ${catchGame.score} petals! Amazing!`);fireConfetti();}
+    } else if(p.y>1.02){
+      catchGame.petals.splice(i,1);catchGame.lives--;
+      const hearts='💛'.repeat(Math.max(0,catchGame.lives))+'🖤'.repeat(Math.max(0,3-catchGame.lives));
+      document.getElementById('catchLives').textContent=hearts;
+      if(catchGame.lives<=0){
+        catchGame.running=false;clearInterval(catchGame.interval);
+        showToast(`Game over! You caught ${catchGame.score} petals! 🌸`,3000);
+        ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillRect(0,0,W,H);
+        ctx.fillStyle='#ff6b9d';ctx.font=`bold ${W*.06}px Pacifico,cursive`;ctx.textAlign='center';
+        ctx.fillText(`🌸 ${catchGame.score} Petals Caught!`,W/2,H/2-20);
+        ctx.font=`${W*.04}px Nunito,sans-serif`;ctx.fillStyle='#8a5a6a';
+        ctx.fillText('Tap "Play" to try again!',W/2,H/2+25);
+        return;
+      }
+    }
+  }
+  catchGame.animId=requestAnimationFrame(drawCatch);
+}
+
+// ============ MEMORY MATCH ============
+const memEmojis=['🌸','🌺','🌷','🌻','🌹','💮','🌼','🍀'];
+let memCards=[],memFlipped=[],memMatches=0,memMoves=0,memTimer=null,memSeconds=0,memLocked=false;
+
+function initMemory(){
+  clearInterval(memTimer);memSeconds=0;memMoves=0;memMatches=0;memLocked=false;
+  document.getElementById('memMoves').textContent='0';
+  document.getElementById('memMatched').textContent='0';
+  document.getElementById('memTime').textContent='0s';
+
+  const pairs=[...memEmojis,...memEmojis];
+  pairs.sort(()=>Math.random()-.5);
+
+  const grid=document.getElementById('memoryGrid');grid.innerHTML='';
+  memCards=[];memFlipped=[];
+
+  pairs.forEach((emoji,i)=>{
+    const card=document.createElement('div');card.className='mem-card';
+    card.innerHTML=`<div class="mem-front">🌸</div><div class="mem-back">${emoji}</div>`;
+    card.dataset.emoji=emoji;card.dataset.idx=i;
+    card.onclick=()=>flipCard(card);
+    card.addEventListener('touchstart',e=>{e.preventDefault();flipCard(card);},{passive:false});
+    grid.appendChild(card);memCards.push(card);
+  });
+
+  memTimer=setInterval(()=>{memSeconds++;document.getElementById('memTime').textContent=memSeconds+'s';},1000);
+}
+
+function flipCard(card){
+  if(memLocked||card.classList.contains('flipped')||card.classList.contains('matched'))return;
+  card.classList.add('flipped');memFlipped.push(card);
+
+  if(memFlipped.length===2){
+    memLocked=true;memMoves++;document.getElementById('memMoves').textContent=memMoves;
+    const[a,b]=memFlipped;
+    if(a.dataset.emoji===b.dataset.emoji){
+      a.classList.add('matched');b.classList.add('matched');
+      memMatches++;document.getElementById('memMatched').textContent=memMatches;
+      memFlipped=[];memLocked=false;
+      showToast('✨ Match! '+a.dataset.emoji);
+      if(memMatches===memEmojis.length){
+        clearInterval(memTimer);
+        setTimeout(()=>{fireConfetti();showToast(`🎉 You won in ${memMoves} moves & ${memSeconds}s! 🌸`,4000);},300);
+      }
+    } else {
+      setTimeout(()=>{a.classList.remove('flipped');b.classList.remove('flipped');memFlipped=[];memLocked=false;},900);
+    }
+  }
+}
+
+// ============ MOOD MANTRA ============
+const mantras={
+  happy:{icon:'😄',title:'Ride the Joy!',text:'Your happiness is a gift — not just to yourself but to everyone around you. Let it overflow. Let it be loud. You deserve every bit of this feeling.',affirmations:['I radiate joy 🌟','My smile is contagious 😊','Joy is my natural state 💛']},
+  sad:{icon:'🫂',title:'It\'s Okay to Feel',text:'Hey. It\'s okay. Sadness is just love with nowhere to go right now. Let yourself feel it — cry if you need to, rest if you need to. This too shall pass, and you will bloom again.',affirmations:['This feeling is temporary 🌱','I am allowed to feel 💙','After rain comes flowers 🌸']},
+  tired:{icon:'🌙',title:'Rest is Sacred',text:'You have been working so hard — your body and soul are asking for a break. Rest is not laziness. Rest is wisdom. Be gentle with yourself today.',affirmations:['Rest is productive 💜','I honour my limits 🌙','Tomorrow I will feel renewed ✨']},
+  anxious:{icon:'🌿',title:'Breathe With Me',text:'In through your nose for 4 counts... hold for 4... out through your mouth for 4. You are safe. This anxiety is just energy that hasn\'t found its place yet. Ground yourself — name 5 things you can see right now.',affirmations:['I am safe right now 🌿','I breathe and release ✨','This moment will pass 🕊️']},
+  lonely:{icon:'💕',title:'You Are Never Truly Alone',text:'Even when it feels quiet and empty — the universe is holding you. Every flower, every sunrise, every tiny beautiful thing exists with you in this moment. You are seen. You are felt. You matter.',affirmations:['I am loved and worthy 💕','Connection finds me 🌸','I am enough as I am 💛']},
+  grateful:{icon:'🙏',title:'What a Beautiful Heart',text:'The ability to feel gratitude — to notice beauty in the small things — is one of the most extraordinary gifts a person can have. And you have it. That says everything about your heart.',affirmations:['Abundance flows to me 🌊','I notice beauty everywhere 🌸','My life is full of gifts 💛']},
+  strong:{icon:'💪',title:'Look How Far You\'ve Come!',text:'You have faced hard days, impossible moments, and storms that tested every part of you. And here you are — still standing, still going, still feeling. That is not small. That is extraordinary strength.',affirmations:['I am resilient 🔥','My strength grows daily 💪','I have survived everything so far 🌟']},
+  excited:{icon:'🎉',title:'Your Energy is Contagious!',text:'That tingly, bubbly, can\'t-sit-still feeling? That is life saying YES to you. Lean into it. Dream bigger. Plan wilder. Something magical is on its way to you and your excitement is calling it closer.',affirmations:['Amazing things are coming 🎊','My excitement is magnetic ⚡','I am ready for magic 🌈']},
+};
+
+function showMantra(mood){
+  document.querySelectorAll('.m-mood').forEach(m=>m.classList.remove('active'));
+  event.target.classList.add('active');
+  const m=mantras[mood];
+  const card=document.getElementById('mantraCard');
+  card.classList.remove('show');card.style.display='none';
+  setTimeout(()=>{
+    card.innerHTML=`<div class="mantra-icon">${m.icon}</div><div class="mantra-title">${m.title}</div><p class="mantra-text">${m.text}</p><div class="mantra-affirmations">${m.affirmations.map(a=>`<span class="affirmation">${a}</span>`).join('')}</div>`;
+    card.style.display='block';setTimeout(()=>card.classList.add('show'),10);
+  },100);
+  if(mood==='happy'||mood==='excited'||mood==='strong'||mood==='grateful')fireConfetti();
+}
+
+// ============ COMPLIMENT MACHINE ============
+const compliments=[
+  {emoji:'🌸',text:'You are the kind of rare person who makes every room feel warmer just by entering it.'},
+  {emoji:'✨',text:'Your laugh could honestly cure a bad day. It\'s that powerful.'},
+  {emoji:'💛',text:'The way you care about people is one of the most beautiful things about you.'},
+  {emoji:'🌺',text:'You are not just beautiful on the outside — your soul shines in a way that is truly breathtaking.'},
+  {emoji:'🦋',text:'You are in the middle of a transformation so beautiful, you can\'t even see it yet.'},
+  {emoji:'🌈',text:'Everything you\'ve been through has made you into someone absolutely extraordinary.'},
+  {emoji:'💪',text:'You are so much stronger than you give yourself credit for. Seriously.'},
+  {emoji:'🌟',text:'The world is genuinely a better, brighter place because you exist in it.'},
+  {emoji:'🎀',text:'Your kindness is like a superpower — and you use it every single day.'},
+  {emoji:'💖',text:'Not everyone has the kind of heart you have. You are truly one of a kind.'},
+  {emoji:'🌻',text:'You turn towards the light even on the darkest days — that is remarkable.'},
+  {emoji:'🍀',text:'Lucky is everyone who gets to know you, talk to you, and be near you.'},
+];
+let lastComp=-1;
+function giveCompliment(){
+  let idx;do{idx=~~(Math.random()*compliments.length);}while(idx===lastComp);
+  lastComp=idx;
+  const c=compliments[idx];
+  document.getElementById('compEmoji').textContent=c.emoji;
+  document.getElementById('compText').textContent=c.text;
+  document.querySelector('.comp-machine').style.animation='none';
+  setTimeout(()=>document.querySelector('.comp-machine').style.animation='',10);
+  fireConfetti();showToast('💌 A compliment for you!');
+}
+</script>
+</body>
+</html>
